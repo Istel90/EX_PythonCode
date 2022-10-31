@@ -73,3 +73,120 @@ xf = rfftfreq(N, 1 / SAMPLE_RATE)
 
 plt.plot(xf, np.abs(yf))
 plt.show()
+
+
+
+#%%
+# sampling rate
+sr = 2000
+# sampling interval
+ts = 1.0/sr
+t = np.arange(0,1,ts)
+
+freq = 1.
+x = 3*np.sin(2*np.pi*freq*t)
+
+freq = 4
+x += np.sin(2*np.pi*freq*t)
+
+freq = 7   
+x += 0.5* np.sin(2*np.pi*freq*t)
+
+plt.figure(figsize = (8, 6))
+plt.plot(t, x, 'r')
+plt.ylabel('x: Amplitude')
+
+plt.show()
+
+
+from numpy.fft import fft, ifft
+X = fft(x)
+N = len(X)
+n = np.arange(N)
+T = N/sr
+freq = n/T 
+
+# 확인
+test = np.abs(X)
+uniqueFreq = np.unique(test )
+
+plt.figure(figsize = (12, 6))
+plt.subplot(121)
+plt.stem(freq, np.abs(X), 'b', markerfmt=" ", basefmt="-b")
+plt.xlabel('Freq (Hz)')
+plt.ylabel('FFT Amplitude |X(freq)|')
+plt.xlim(0, 10)
+
+plt.subplot(122)
+plt.plot(t, ifft(X), 'r')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+plt.tight_layout()
+plt.show()
+
+from scipy.fftpack import fftfreq
+
+plt.figure(figsize = (8, 6))
+plt.plot(t, x, 'r')
+plt.ylabel('Amplitude')
+plt.title('Original signal')
+plt.show()
+
+
+# FFT the signal
+sig_fft = fft(x)
+# copy the FFT results
+sig_fft_filtered = sig_fft.copy()
+
+# obtain the frequencies using scipy function
+freq = fftfreq(len(x), d=1./2000)
+# define the cut-off frequency
+cut_off = 6
+
+# high-pass filter by assign zeros to the 
+# FFT amplitudes where the absolute 
+# frequencies smaller than the cut-off 
+sig_fft_filtered[ np.abs(freq) < cut_off] = 0
+
+# get the filtered signal in time domain
+filtered = ifft(sig_fft_filtered)
+
+# plot the filtered signal
+plt.figure(figsize = (12, 6))
+plt.plot(t, filtered)
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+plt.show()
+
+
+#%% 랜덤하게 주파스 그려줌
+
+t = np.arange(400)
+n2 = np.zeros((400,), dtype=complex)
+n2[40:60] = np.exp(1j*np.random.uniform(0, 4*np.pi, (20,)))
+s2 = np.fft.ifft(n2)
+plt.plot(t, s2, label='real')
+
+X2 = fft(s2)
+N2 = len(X2)
+n = np.arange(N2)
+T2 = N2/400
+freq2 = n/T2 
+
+Test = np.abs(X2)
+# plot
+# plt.figure(figsize = (12, 6))
+plt.subplot(121)
+plt.stem(freq2, X2, 'b', markerfmt=" ", basefmt="-b")
+plt.xlabel('Freq (Hz)')
+plt.ylabel('FFT Amplitude |X(freq)|')
+plt.xlim(20, 100)
+
+plt.subplot(122)
+plt.plot(t, ifft(X2), 'r')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+plt.tight_layout()
+plt.show()
+
+#%%
