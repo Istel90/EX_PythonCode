@@ -137,6 +137,8 @@ plt.show()
 sig_fft = fft(x)
 # copy the FFT results
 sig_fft_filtered = sig_fft.copy()
+sig_fft_filtered2 = sig_fft.copy()
+sig_fft_filtered3 = sig_fft.copy()
 
 # obtain the frequencies using scipy function
 freq = fftfreq(len(x), d=1./2000)
@@ -151,26 +153,38 @@ sig_fft_filtered[ np.abs(freq) < cut_off] = 0
 # get the filtered signal in time domain
 filtered = ifft(sig_fft_filtered)
 
+
+sig_fft_filtered2[ np.abs(freq) > 6 ] = 0
+sig_fft_filtered2[ np.abs(freq) < 3] = 0
+filtered2 = ifft(sig_fft_filtered2)
+
+sig_fft_filtered3[ np.abs(freq) > 2 ] = 0
+filtered3 = ifft(sig_fft_filtered3)
+
+
 # plot the filtered signal
 plt.figure(figsize = (12, 6))
 plt.plot(t, filtered)
+plt.plot(t, filtered2)
+plt.plot(t, filtered3)
 plt.xlabel('Time (s)')
 plt.ylabel('Amplitude')
 plt.show()
 
 
+
 #%% 랜덤하게 주파스 그려줌
 
-t = np.arange(400)
-n2 = np.zeros((400,), dtype=complex)
-n2[40:60] = np.exp(1j*np.random.uniform(0, 4*np.pi, (20,)))
+t = np.arange(100)
+n2 = np.zeros((100,), dtype=complex)
+n2[50:55] = np.exp(2j*np.random.uniform(0, 4*np.pi, (5,)))
 s2 = np.fft.ifft(n2)
 plt.plot(t, s2, label='real')
 
 X2 = fft(s2)
 N2 = len(X2)
 n = np.arange(N2)
-T2 = N2/400
+T2 = N2/100
 freq2 = n/T2 
 
 Test = np.abs(X2)
@@ -180,7 +194,7 @@ plt.subplot(121)
 plt.stem(freq2, X2, 'b', markerfmt=" ", basefmt="-b")
 plt.xlabel('Freq (Hz)')
 plt.ylabel('FFT Amplitude |X(freq)|')
-plt.xlim(20, 100)
+plt.xlim(40, 100)
 
 plt.subplot(122)
 plt.plot(t, ifft(X2), 'r')
@@ -188,5 +202,50 @@ plt.xlabel('Time (s)')
 plt.ylabel('Amplitude')
 plt.tight_layout()
 plt.show()
+
+
+# copy the FFT results
+sig_fft_filtered_test = X2.copy()
+
+# obtain the frequencies using scipy function
+freq = fftfreq(len(s2), d=1./100)
+
+# define the cut-off frequency
+cut_off = 50
+
+# high-pass filter by assign zeros to the 
+# FFT amplitudes where the absolute 
+# frequencies smaller than the cut-off 
+sig_fft_filtered_test[ np.abs(freq) < cut_off] = 0
+
+# get the filtered signal in time domain
+filtered_test = ifft(sig_fft_filtered_test)
+
+# plot the filtered signal
+plt.figure(figsize = (12, 6))
+plt.plot(t, filtered_test)
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+plt.show()
+
+
+
+# # copy the FFT results
+# sig_fft_filtered_test2 = X2.copy()
+# sig_fft_filtered_test2[ np.abs(freq) < 49] = 0
+# sig_fft_filtered_test2[ np.abs(freq) > 50] = 0
+
+# # get the filtered signal in time domain
+# filtered_test2 = ifft(sig_fft_filtered_test2)
+
+# # plot the filtered signal
+# plt.figure(figsize = (12, 6))
+# plt.plot(t, filtered_test2)
+# plt.xlabel('Time (s)')
+# plt.ylabel('Amplitude')
+# plt.show()
+
+
+
 
 #%%
