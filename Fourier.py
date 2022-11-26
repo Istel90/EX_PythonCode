@@ -88,12 +88,14 @@ x += np.sin(2*np.pi*freq*t)
 freq = 7   
 x += 0.5* np.sin(2*np.pi*freq*t)
 
+# x scalar
+# x += 5
+
 plt.figure(figsize = (8, 6))
 plt.plot(t, x, 'r')
 plt.ylabel('x: Amplitude')
 
 plt.show()
-
 
 # 정리
 X = fft(x)
