@@ -1,3 +1,13 @@
+'''
+Filename: d:\70_PyCode\EX_PythonCode\Test_Run.py
+Path: d:\70_PyCode\EX_PythonCode
+Created Date: Wednesday, November 2nd 2022, 3:44:43 pm
+Author: Istel90
+
+Copyright (c) 2022 Lab.Spatial data Science & Planning in University of Seoul
+'''
+
+
 #%%
 import sys
 sys.path.append(r"D:\70_PyCode")
