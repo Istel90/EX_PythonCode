@@ -9,7 +9,7 @@ Copyright (c) 2023 Lab.Spatial data Science & Planning in University of Seoul
 #%% Necessary Packages
 import os
 import sys
-import numpy as npㄴㄴㄴㄴㄴㄴ
+import numpy as np
 import pandas as pd
 
 #%% Main Parameters
@@ -54,7 +54,7 @@ class ConditionalSampling:
 
     # 원래 데이터에서 해당하는 샘플의 인덱스를 뽑아내는 함수
     def ConditionalSample(self, *addfields):
-        ConditionalSampling = self.readInputCSV.groupby(self.field).apply(lambda x: np.random.choice(x.index, int((x.index.size/self.readInputCSV.shape[0])*self.TotalSample) if int((x.index.size/self.readInputCSV.shape[0])*self.TotalSample) > 0  else 1, replace=False))
+        ConditionalSampling = self.readInputCSV.groupby(self.field).apply(lambda x: np.random.choice(x.index, int((x.index.size/self.readInputCSV.shape[0])*self.TotalSample) if int((x.index.size/self.readInputCSV.shape[0])*self.TotalSample) > 1  else 1, replace=False))
         return ConditionalSampling          
 
     # 해야하는 기능: 결과를 원하는 형태로 저장할 수 있는 함수 만들기
