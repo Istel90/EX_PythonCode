@@ -53,27 +53,44 @@ class ConditionalSampling:
         return self.data
 
     # 원래 데이터에서 해당하는 샘플의 인덱스를 뽑아내는 함수
-    def ConditionalSample(self, *addfields):
-        ConditionalSampling = self.readInputCSV.groupby(self.field).apply(lambda x: np.random.choice(x.index, int((x.index.size/self.readInputCSV.shape[0])*self.TotalSample) if int((x.index.size/self.readInputCSV.shape[0])*self.TotalSample) > 1  else 1, replace=False))
-        return ConditionalSampling          
+    def ConditionalSample2(self):
+        self._result = {}
+        for key, group in self.readInputCSV.groupby(self.field):
+            size = int((group.index.size / self.readInputCSV.shape[0]) * self.TotalSample)
+            size = max(size, 1)
+            self._result[key] = sorted(np.random.choice(group.index, size, replace=False))
+        return self._result
+    
+    def saveSampleToCsv(self, result_dir):
+        Path(result_dir).mkdir(parents=True, exist_ok=True)
+        for key, indices in self._result.items():
+            target_df = self.readInputCSV.loc[indices]
+            filename = f"{result_dir}/{'_'.join(map(str, key))}.csv"
+            target_df.to_csv(filename, index=False, encoding="utf-8-sig")
+        
 
     # 해야하는 기능: 결과를 원하는 형태로 저장할 수 있는 함수 만들기
     def saveSample(self):
         return print("Not yet")
 
+
+
 # ConditionalSampling = readInputCSV.groupby(SelectField).apply(lambda x: np.random.choice(x.index, ((x.index.size/readInputCSV.shape[0])*CountTotalSample) if ((x.index.size/readInputCSV.shape[0])*CountTotalSample) > 0  else int((x.index.size/readInputCSV.shape[0])*CountTotalSample), replace=False))
 
 #%% Example 
 # Set Working Directory
-# dirpath = r'D:\70_PyCode\EX_PythonCode'
-# os.chdir(dirpath)
+dirpath = r'D:\70_PyCode\EX_PythonCode'
+os.chdir(dirpath)
 
 # # read.csv
-# InputCSV = 'SampleforConditional.csv'
-# SelectField = ["BBSNCD", "HSI_QUANTILE", "LV2_CODE"]
-# CountTotalSample = 1100
+InputCSV = 'SampleforConditional.csv'
+SelectField = ["BBSNCD", "HSI_QUANTILE", "LV2_CODE"]
+CountTotalSample = 1100
 
 # ConditionalSampling
+readClassTest = ConditionalSampling(InputCSV, SelectField, CountTotalSample)
+ConTest = readClassTest.ConditionalSample()
+
 
 
 #%% Test
@@ -115,4 +132,7 @@ Test7 = Test4.apply(lambda x: x.index.size )
 Test4 = readInputCSV.groupby(SelectField).apply(lambda x: np.random.choice(x.index, 1, replace=False))
 #
     
-
+# tan(theta) = 1/3 then theta = 26.6
+# tan(theta) = 1/4 then theta = 22.5
+# tan(theta) = 1/5 then theta = 19.5
+# tan(theta) = 1/6 then theta = 17.4
